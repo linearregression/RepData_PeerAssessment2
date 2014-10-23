@@ -14,7 +14,7 @@ require(R.utils)
 targetfile <- 'StormData.csv'
 zipData <- paste(targetfile,'.bz2', sep='')
 
-if(!file.exists(zipData)) {
+if(!file.exists(targetfile) & !file.exists(zipData)) {
    print('Downloading StormData.zip ....')   
    download.file(url='https://d396qusza40orc.cloudfront.net/repdata%2Fdata%2FStormData.csv.bz2', destfile=zipData, method='curl')
 }
