@@ -1,5 +1,5 @@
 ---
-title: "Reproducible Research: Peer Assessment 2"
+title: "NOAA Weather Population Health And Economic Damage Analysis"
 output: 
   html_document:
     keep_md: true
@@ -202,7 +202,7 @@ Publish data
 
 ``` {r rpublish, echo=TRUE}
 
-result <- rpubsUpload("My document title", "PA2_template.html")
+result <- rpubsUpload("NOAA Weather Population Health And Economic Damage Analysis", "PA2_template.html")
 if (!is.null(result$continueUrl)) 
     browseURL(result$continueUrl) else stop(result$error)
 
