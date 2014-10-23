@@ -27,7 +27,7 @@ if(file.exists(zipData) & !file.exists(targetfile)) {
 Load data from csv
 ```{r loaddata, echo=TRUE}
 Sys.setlocale("LC_TIME", "English")
-fitdata<- read.csv(file='activity.csv', header=TRUE, stringsAsFactor=FALSE, na.strings = "NA", colClasses=c("integer", "Date", "integer"))
+fitdata<- read.csv(file=targetfile, header=TRUE, stringsAsFactor=FALSE, na.strings = "NA", colClasses=c("integer", "Date", "integer"))
 
 ```
 ## What is mean total number of steps taken per day?
