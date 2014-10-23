@@ -34,8 +34,8 @@ if(!file.exists(zipData)) {
 Load data from csv
 ```{r loaddata, echo=TRUE}
 require(utils)
-
-stormdata <- read.csv2(file=zipData, header=TRUE, sep='', stringsAsFactor=FALSE, strip.white = FALSE, skipNul = TRUE)
+require(data.table)
+stormdata <- stormdata <- read.csv2(file=zipData, header=TRUE, sep='', stringsAsFactor=FALSE, strip.white = TRUE, skipNul = TRUE, nrows=100)
 
 ```
 ## What is mean total number of steps taken per day?
