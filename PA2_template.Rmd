@@ -16,25 +16,26 @@ For background of project, please refer to [README.md](https://github.com/linear
 
 ## Download data and unzip locally
 ```{r download, echo=TRUE}
-require(R.utils)
+rm(list=ls())
+require(utils)
 targetfile <- 'StormData.csv'
 zipData <- paste(targetfile,'.bz2', sep='')
 
-if(!file.exists(targetfile) & !file.exists(zipData)) {
+if(!file.exists(zipData)) {
    print('Downloading StormData.zip ....')   
    download.file(url='https://d396qusza40orc.cloudfront.net/repdata%2Fdata%2FStormData.csv.bz2', destfile=zipData, method='curl')
 }
-if(file.exists(zipData) & !file.exists(targetfile)) {
-   print('Unzip StormData.zip ....')  
-   bunzip2(filename=zipData, destname=targetfile, overwrite=TRUE)
-}
+#if(file.exists(zipData) & !file.exists(targetfile)) {
+#   print('Unzip StormData.zip ....')  
+#   bunzip2(filename=zipData, destname=targetfile, overwrite=TRUE)
+#}
 ```
 ## Loading and preprocessing the data
 Load data from csv
 ```{r loaddata, echo=TRUE}
-require(data.table)
-Sys.setlocale("LC_TIME", "English")
-stormdata <- read.csv2(file=targetfile, header=TRUE, stringsAsFactor=FALSE, na.strings = "NA", colClasses=c("integer", "Date", "integer"))
+require(utils)
+
+stormdata <- read.csv2(file=zipData, header=TRUE, sep='', stringsAsFactor=FALSE, strip.white = FALSE, skipNul = TRUE)
 
 ```
 ## What is mean total number of steps taken per day?
