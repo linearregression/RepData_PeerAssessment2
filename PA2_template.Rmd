@@ -26,8 +26,9 @@ if(file.exists(zipData) & !file.exists(targetfile)) {
 ## Loading and preprocessing the data
 Load data from csv
 ```{r loaddata, echo=TRUE}
+require(data.table)
 Sys.setlocale("LC_TIME", "English")
-fitdata<- read.csv(file=targetfile, header=TRUE, stringsAsFactor=FALSE, na.strings = "NA", colClasses=c("integer", "Date", "integer"))
+stormdata <- read.csv2(file=targetfile, header=TRUE, stringsAsFactor=FALSE, na.strings = "NA", colClasses=c("integer", "Date", "integer"))
 
 ```
 ## What is mean total number of steps taken per day?
