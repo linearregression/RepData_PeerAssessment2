@@ -58,6 +58,14 @@ Events are collected and categorized differently from 1950-2014. For example, on
 Since we missing data is not zero, we cannot compare data in different period. This restricts the analyse to compare 1996 to present. 
 
 # Dollar damage exponents inconsistency
+Some property and crop damage dollar amounts are recorded in two columns.
+Base dollar amount in respective DMG, unit exponent in DMGEXP.
+The total dollar amount need to be noralized from both DM and DMGEXP.
+For example for property damanage 100 as 1 in PROPDMG, H or h in PROPDMGEXP. 
+All non-numeric characters are normalzed to lower case and are limited to h,k,m,b (hundreds, thousand, million, billion).
+Numeric characters are conerted to integer.
+All others as 0, to be converted to 10^0 which is 1.
+
 
 
 ``` {r cleansedata, echo=TRUE}
