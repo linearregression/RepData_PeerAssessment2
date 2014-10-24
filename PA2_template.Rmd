@@ -29,11 +29,17 @@ if(!file.exists(zipData)) {
 
 ```
 ## Loading and preprocessing the data
+For the two questions to research only columns are relevant:
+BGN_DATE for time,
+FATALITIES, "INJURIES for population health
+PROPDMG, PROPDMGEXP, CROPDMG, CROPDMGEXP - for property and crop damages and their corresponding numeric exponents
+
 Load data from csv
 ```{r loaddata, echo=TRUE}
 require(utils)
 require(data.table)
-stormdata <- stormdata <- read.csv2(file=zipData, header=TRUE, sep=",", stringsAsFactor=FALSE,  strip.white = TRUE, skipNul = TRUE, nrows=100)
+columns <-c(rep("integer", 7), rep("NULL", 6)))
+stormdata <- read.csv2(file=zipData, header=TRUE, sep=",", stringsAsFactor=FALSE,  strip.white = TRUE, skipNul = TRUE, colClasses=, nrows=100)
 
 # Find how many events
 events <- unique(stormdata$EVTYPE)
@@ -44,8 +50,15 @@ cropdamage_exp <- unique(stormdata$CROPDMGEXP))
 
 ```
 # Cleanse data
+## Data entries mistypes
+
+
+## Events collection inconsistency 
 Events are collected and categorized differently from 1950-2014. For example, only Tornado is collected from 1950 to 1954; Tornado, Thunderstorm Wind and Hail from 1955 to 1992; but from 1996 onwards 48 event types are recorded.
 Since we missing data is not zero, we cannot compare data in different period. This restricts the analyse to compare 1996 to present. 
+
+# Dollar damage exponents inconsistency
+
 
 ``` {r cleansedata, echo=TRUE}
 
