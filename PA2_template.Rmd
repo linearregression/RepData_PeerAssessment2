@@ -48,7 +48,7 @@ Load data from csv
 ```{r loaddata, echo=TRUE}
 require(utils)
 require(data.table)
-columns <-c("NULL", "character", rep("NULL", 6), "character", rep("NULL", 14), rep("character", 5),'character', rep("NULL", 9))
+columns <-c("NULL", "character", rep("NULL", 5), "character", rep("NULL", 14), rep("character", 5),'character', rep("NULL", 9))
 stormdata <- read.csv2(file=zipData, header=TRUE, sep=",", stringsAsFactor=FALSE,  strip.white = TRUE, skipNul = TRUE, colClasses= columns)
 
 # Find how many events
