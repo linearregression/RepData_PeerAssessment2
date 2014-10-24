@@ -35,7 +35,11 @@ require(data.table)
 stormdata <- stormdata <- read.csv2(file=zipData, header=TRUE, sep='', stringsAsFactor=FALSE, strip.white = TRUE, skipNul = TRUE, nrows=100)
 
 ```
+# Analysis
+``` {r, analysis, echo=TRUE}
 
+
+```
 # Results.
 
 
