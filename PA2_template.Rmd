@@ -8,14 +8,14 @@ output:
 
 # Synopsis
 An analysis of 
-U.S. National Oceanic and Atmospheric Administration's (NOAA) storm database. This database tracks characteristics of major storms and weather events in the United States, including when and where they occur, as well as estimates of any fatalities, injuries, and property damage.
-* which types of events (as indicated in the EVTYPE variable) are most harmful with respect to population health?
+U.S. National Oceanic and Atmospheric Administration's (NOAA) storm database. This database tracks characteristics of major storms and weather events in the United States, including when and where they occur, as well as estimates of any fatalities, injuries, and property damage. This report researches
+* which types of events (as indicated in the EVTYPE variable) are most harmful to population health?
 * which types of events have the greatest economic consequences?
 
 For background of project, please refer to [README.md](https://github.com/linearregression/RepData_PeerAssessment2/blob/master/README.md)
 
 # Data Processing
-## Download data and unzip locally
+## Download data from source
 ```{r download, echo=TRUE}
 rm(list=ls())
 require(utils)
@@ -35,7 +35,26 @@ require(utils)
 require(data.table)
 stormdata <- stormdata <- read.csv2(file=zipData, header=TRUE, sep=",", stringsAsFactor=FALSE,  strip.white = TRUE, skipNul = TRUE, nrows=100)
 
+# Find how many events
+events <- unique(stormdata$EVTYPE)
+population_health <- c("FATALITIES", "INJURIES")
+# Get the Unit exponent for dollar amount damage
+propertydamage_exp <- unique(stormdata$PROPDMGEXP))
+cropdamage_exp <- unique(stormdata$CROPDMGEXP))
+
 ```
+# Cleanse data
+Events are collected and categorized differently from 1950-2014. For example, only Tornado is collected from 1950 to 1954; Tornado, Thunderstorm Wind and Hail from 1955 to 1992; but from 1996 onwards 48 event types are recorded.
+Since we missing data is not zero, we cannot compare data in different period. This restricts the analyse to compare 1996 to present. 
+
+``` {r cleansedata, echo=TRUE}
+
+
+```
+
+
+The scope of events related harmful to population health are:
+
 # Analysis
 ``` {r, analysis, echo=TRUE}
 
