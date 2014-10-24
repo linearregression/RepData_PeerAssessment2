@@ -34,12 +34,22 @@ BGN_DATE for time,
 FATALITIES, "INJURIES for population health
 PROPDMG, PROPDMGEXP, CROPDMG, CROPDMGEXP - for property and crop damages and their corresponding numeric exponents
 
+ [1] "STATE__"    "BGN_DATE"   "BGN_TIME"   "TIME_ZONE"  "COUNTY"    
+ [6] "COUNTYNAME" "STATE"      "EVTYPE"     "BGN_RANGE"  "BGN_AZI"   
+[11] "BGN_LOCATI" "END_DATE"   "END_TIME"   "COUNTY_END" "COUNTYENDN"
+[16] "END_RANGE"  "END_AZI"    "END_LOCATI" "LENGTH"     "WIDTH"     
+[21] "F"          "MAG"        "FATALITIES" "INJURIES"   "PROPDMG"   
+[26] "PROPDMGEXP" "CROPDMG"    "CROPDMGEXP" "WFO"        "STATEOFFIC"
+[31] "ZONENAMES"  "LATITUDE"   "LONGITUDE"  "LATITUDE_E" "LONGITUDE_"
+[36] "REMARKS"    "REFNUM" 
+
+
 Load data from csv
 ```{r loaddata, echo=TRUE}
 require(utils)
 require(data.table)
-columns <-c(rep("integer", 7), rep("NULL", 6)))
-stormdata <- read.csv2(file=zipData, header=TRUE, sep=",", stringsAsFactor=FALSE,  strip.white = TRUE, skipNul = TRUE, colClasses=, nrows=100)
+columns <-c("NULL", "character", rep("NULL", 6), "character", rep("NULL", 14), rep("character", 5),'character', rep("NULL", 9))
+stormdata <- read.csv2(file=zipData, header=TRUE, sep=",", stringsAsFactor=FALSE,  strip.white = TRUE, skipNul = TRUE, colClasses= columns)
 
 # Find how many events
 events <- unique(stormdata$EVTYPE)
