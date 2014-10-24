@@ -4,7 +4,6 @@ output:
   html_document:
     keep_md: true
 ---
-# Title: NOAA Weather Population Health And Economic Damage Analysis from Storm
 
 # Synopsis
 An analysis of 
@@ -16,7 +15,8 @@ For background of project, please refer to [README.md](https://github.com/linear
 
 # Data Processing
 ## Download data and unzip locally
-```{r download, echo=TRUE}
+
+```r
 rm(list=ls())
 require(utils)
 targetfile <- 'StormData.csv'
@@ -26,34 +26,47 @@ if(!file.exists(zipData)) {
    print('Downloading StormData.zip ....')   
    download.file(url='https://d396qusza40orc.cloudfront.net/repdata%2Fdata%2FStormData.csv.bz2', destfile=zipData, method='curl')
 }
-
 ```
 ## Loading and preprocessing the data
 Load data from csv
-```{r loaddata, echo=TRUE}
+
+```r
 require(utils)
 require(data.table)
 stormdata <- stormdata <- read.csv2(file=zipData, header=TRUE, sep=",", stringsAsFactor=FALSE,  strip.white = TRUE, skipNul = TRUE, nrows=100)
-
 ```
 # Analysis
-``` {r, analysis, echo=TRUE}
 
-
-```
 # Results.
 
 
 ## Publishing Results
-``` {r rpublish, echo=TRUE}
+
+```r
 title <- "NOAA Weather Population Health And Economic Damage Analysis"
 html <- "PA2_template.html"
 result <- rpubsUpload(title, html)
+```
+
+```
+## Error: could not find function "rpubsUpload"
+```
+
+```r
 if (!is.null(result$continueUrl)) 
     browseURL(result$continueUrl) else stop(result$error)
+```
 
+```
+## Error: object 'result' not found
+```
+
+```r
 # update the same document with a new title
 updateResult <- rpubsUpload(title, html, result$id)
+```
 
+```
+## Error: could not find function "rpubsUpload"
 ```
 
