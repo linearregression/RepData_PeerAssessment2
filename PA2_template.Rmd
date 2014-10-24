@@ -61,8 +61,8 @@ cropdamage_exp <- unique(stormdata$CROPDMGEXP))
 
 ```
 # Cleanse data
-## Data entries mistypes
-
+## Event entries inconsistency
+There are extra leading and trailing whitespaces, mixes cases in entries. All entries normalized to lower case and have whitespaces trimmed.
 
 ## Events collection inconsistency 
 Events are collected and categorized differently from 1950-2014. For example, only Tornado is collected from 1950 to 1954; Tornado, Thunderstorm Wind and Hail from 1955 to 1992; but from 1996 onwards 48 event types are recorded.
@@ -82,6 +82,8 @@ All others as 0, to be converted to 10^0 which is 1.
 ``` {r cleansedata, echo=TRUE}
 require(stringr)
 stormdata$EVTYPE<-as.vector(tolower(str_trim(stormdata$EVTYPE)))
+stormdata$PropertyDamage <-
+stormdata$cropDamage <- 
 
 ```
 
