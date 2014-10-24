@@ -81,7 +81,7 @@ All others as 0, to be converted to 10^0 which is 1.
 
 ``` {r cleansedata, echo=TRUE}
 require(stringr)
-stormdata$BGN_DATE <- <-format(as.Date(stormdata$BGN_DATE , "%m/%d/%Y"), "%Y", drop0trailing=TRUE)
+stormdata$YEAR <- <-format(as.Date(stormdata$BGN_DATE , "%m/%d/%Y"), "%Y", drop0trailing=TRUE)
 
 stormdata$EVTYPE <- as.vector(tolower(str_trim(stormdata$EVTYPE)))
 datarange <- 
