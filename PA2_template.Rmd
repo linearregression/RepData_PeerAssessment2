@@ -32,7 +32,7 @@ Load data from csv
 ```{r loaddata, echo=TRUE}
 require(utils)
 require(data.table)
-stormdata <- stormdata <- read.csv2(file=zipData, header=TRUE, sep='', stringsAsFactor=FALSE, strip.white = TRUE, skipNul = TRUE, nrows=100)
+stormdata <- stormdata <- read.csv2(file=zipData, header=TRUE, sep=",", stringsAsFactor=FALSE,  strip.white = TRUE, skipNul = TRUE, nrows=100)
 
 ```
 # Analysis
@@ -53,5 +53,6 @@ if (!is.null(result$continueUrl))
 
 # update the same document with a new title
 updateResult <- rpubsUpload(title, html, result$id)
+
 ```
 
