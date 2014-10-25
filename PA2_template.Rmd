@@ -133,15 +133,20 @@ public <- top_n(public, 10)
 # Plot poplulation safty top 10 result
 g <- ggplot(public , aes(x=EVTYPE, y=PUBLICSAFTY))
 g <- g + theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
-g <- g + ggtitle("Negative Public Safety Events in USA - 1995 to 2014")
+g <- g + ggtitle("Top 10 Weather induced Negative Public Safety Events in US - 1995 to 2014")
 g <- g + ylab("Negative Public Safety Events")
 g <- g + geom_bar(stat="identity", fill="yellow")
 suppressWarnings(print(g))
 rm(public)
 
 3 Plot economic damage result
-pp = ggplot(b2_melt, aes(x=EVTYPE,y=value, fill=Type))
-pp+geom_bar(stat = "identity")+coord_flip()
+g <- ggplot(damage , aes(x=EVTYPE, y=DAMAGE))
+g <- g + theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
+g <- g + ggtitle("Top 10 Weather Events Economic damages in US - 1995 to 2014")
+g <- g + ylab("Economic damages (dollars)")
+g <- g + geom_bar(stat="identity", fill="red")
+suppressWarnings(print(g))
+rm(public)
 
 ```
 # Results.
