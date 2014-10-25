@@ -121,6 +121,15 @@ require(ggplot2) || install.packages('ggplot2')
 # Summarise econmoic_damage by events & rank total  
 
 
+
+# Plot poplulation safty result
+p2 = ggplot(a2_melt, aes(x=EVTYPE,y=value, fill=Type))
+p2+geom_bar(stat = "identity")+coord_flip()
+
+3 Plot economic damage result
+pp = ggplot(b2_melt, aes(x=EVTYPE,y=value, fill=Type))
+pp+geom_bar(stat = "identity")+coord_flip()
+
 ```
 # Results.
 Tornado and flood causes most economic damage, as well as damage to population health.
