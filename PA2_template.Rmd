@@ -1,15 +1,18 @@
 ---
-title: "NOAA Weather Population Health And Economic Damage Analysis"
+title: "Reproducible Research: Peer Assessment 2"
 output: 
   html_document:
     keep_md: true
-  pdf_document
 ---
-# Title: NOAA Weather Population Health And Economic Damage Analysis from Storm
+
+# Title 
+
+Analysis of NOAA weather events for population health effects and economic damage
 
 # Synopsis
 
-From analysis of NOAA storm data for years 1950-2011, an emprical comparison is performed toinvestigate which weathe events are most costly in terms of US dollars and havig most damages to population health.
+
+From  NOAA storm data for years 1950-2011, an emprical comparison is performed toinvestigate which weathe events are most costly in terms of US dollars and havig most damages to population health.
 
 No inflation adjustment in dollars is made. Comparison is later restricted from 1995 to 2014 because of events collections changes, and missing data cannot be treated as zero.
 
@@ -55,27 +58,20 @@ Event names are trimmed of leading and trailing whitespaces and normalized o low
 
 ## Events collection inconsistency 
 Events categorizations and data collections expands from 1950-2014. For example, only Tornado is collected from 1950 to 1954; but from 1996 onwards 48 event types are recorded.
-Since missing data does not equates zero effect, the analysis to compare 1996 to present when collections methods are uniform and data most recent.
+Because missing data does not equate zero effect, the analysis is thus restricted to most recent collection period - 1996 to present.
 
 # Dollar damage exponents inconsistency
-Some property and crop damage dollar amounts are recorded in two columns.
-Base dollar amount in respective DMG, unit exponent in DMGEXP.
-The total dollar amount need to be noralized from both DM and DMGEXP.
-For example for property damanage 100 as 1 in PROPDMG, H or h in PROPDMGEXP. 
-All non-numeric characters are normalzed to lower case and are limited to h,k,m,b (hundreds, thousand, million, billion).
-Numeric characters are conerted to integer.
-All others as 0, to be converted to 10^0 which is 1.
+Some property[PPROP] and crop[CROP] damage dollar amounts are recorded in two columns:
+ * base dollar amount in respective DMG column
+ * unit exponent in DMGEXP column.
+
+Unadjusted dollar amounts, based on the value and suffix. 
+Suffix (h,k,m,b) is converted to unadjusted multipler; (+,-,? and empty sring) is converted to multipler of 1. Numeric characters converted to integer multipler.
+
 
 ``` {r cleansedata, echo=TRUE}
 require(stringr) || install.packages('stringr')
-clean_exp <- function(x){
-             x <- tolower(x)
-             x <- gsub('', '0', x=x)
-             x <- gsub('[\?\+\-]', '0', x=x)
-             x <- gsub('+', '0', x=x)
-             x <- gsub('-', replacement='0', x=x)
-             as.numeric(x)
-         }
+
 propertydamage_exp <- unique(stormdata$PROPDMGEXP)
 cropdamage_exp <- unique(stormdata$CROPDMGEXP)
 
@@ -107,7 +103,7 @@ stormdata$CROPDMGEXP <- as.vector(tolower(str_trim(stormdata$CROPDMGEXP)))
 The scope of events related harmful to population health are:
 
 # Analysis
-``` {r, analysis, echo=TRUE}
+``` {r analysis, echo=TRUE}
 
 
 ```
@@ -119,7 +115,7 @@ Tornado and flood causes most economic damage, as well as damage to population h
 
 ## Publishing Results
 ``` {r rpublish, echo=TRUE}
-require(knitr) || install.packges('knitr')
+require(knitr) || install.packages('knitr')
 
 title <- "NOAA Weather Population Health And Economic Damage Analysis"
 html <- "PA2_template.html"
