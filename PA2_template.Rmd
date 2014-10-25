@@ -8,6 +8,12 @@ output:
 # Title: NOAA Weather Population Health And Economic Damage Analysis from Storm
 
 # Synopsis
+
+From analysis of NOAA storm data for years 1950-2011, an emprical comparison is performed toinvestigate which weathe events are most costly in terms of US dollars and havig most damages to population health.
+
+No inflation adjustment in dollars is made. Comparison is later restricted from 1995 to 2014 because of events collections changes, and missing data cannot be treated as zero.
+
+
 An analysis of 
 U.S. National Oceanic and Atmospheric Administration's (NOAA) storm database. This database tracks characteristics of major storms and weather events in the United States, including when and where they occur, as well as estimates of any fatalities, injuries, and property damage. This report researches
 * which types of events (as indicated in the EVTYPE variable) are most harmful to population health?
