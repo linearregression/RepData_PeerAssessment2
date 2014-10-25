@@ -19,7 +19,6 @@ For background of project, please refer to [README.md](https://github.com/linear
 ## Download data from source
 ```{r download, echo=TRUE}
 rm(list=ls())
-require(utils)
 targetfile <- 'StormData.csv'
 zipData <- paste(targetfile,'.bz2', sep='')
 
@@ -37,8 +36,8 @@ PROPDMG, PROPDMGEXP, CROPDMG, CROPDMGEXP - for property and crop damages and the
 
 Load data from csv
 ```{r loaddata, echo=TRUE}
-require(utils)
-require(data.table)
+require(utils) || install.packages('utils')
+require(data.table) || install.packages('data.table')
 columns <-c("NULL", "character", rep("NULL", 5), "character", rep("NULL", 14), rep("character", 5),'character', rep("NULL", 9))
 stormdata <- read.csv2(file=zipData, header=TRUE, sep=",", stringsAsFactor=FALSE,  strip.white = TRUE, skipNul = TRUE, colClasses= columns)
 
@@ -52,11 +51,11 @@ cropdamage_exp <- unique(stormdata$CROPDMGEXP)
 ```
 # Cleanse data
 ## Event entries inconsistency
-There are extra leading and trailing whitespaces, mixes cases in entries. All entries normalized to lower case and have whitespaces trimmed.
+Event names are trimmed of leading and trailing whitespaces and normalized o lowercases. Events are not recategorized avoiding changing any original assumptions.
 
 ## Events collection inconsistency 
-Events are collected and categorized differently from 1950-2014. For example, only Tornado is collected from 1950 to 1954; Tornado, Thunderstorm Wind and Hail from 1955 to 1992; but from 1996 onwards 48 event types are recorded.
-Since we missing data is not zero, we cannot compare data in different period. This restricts the analyse to compare 1996 to present. 
+Events categorizations and data collections expands from 1950-2014. For example, only Tornado is collected from 1950 to 1954; but from 1996 onwards 48 event types are recorded.
+Since missing data does not equates zero effect, the analysis to compare 1996 to present when collections methods are uniform and data most recent.
 
 # Dollar damage exponents inconsistency
 Some property and crop damage dollar amounts are recorded in two columns.
@@ -68,7 +67,7 @@ Numeric characters are conerted to integer.
 All others as 0, to be converted to 10^0 which is 1.
 
 ``` {r cleansedata, echo=TRUE}
-require(stringr)
+require(stringr) || install.packages('stringr')
 clean_exp <- function(x){
              x <- tolower(x)
              x <- gsub('', '0', x=x)
@@ -84,7 +83,7 @@ cropdamage_exp <- unique(stormdata$CROPDMGEXP)
 stormdata$YEAR <-format(as.Date(stormdata$BGN_DATE , "%m/%d/%Y"), "%Y", drop0trailing=TRUE)
 # only consider fro year 1995 to 2014
 stormdata <- stormdata[stormdata$YEAR >= 1995 & stormdata$YEAR <= 2014,] 
-
+# Trim leading and trailing whitespace, tolower case.
 stormdata$EVTYPE <- as.vector(tolower(str_trim(stormdata$EVTYPE)))
 stormdata$PROPDMGEXP <- as.vector(tolower(str_trim(stormdata$PROPDMGEXP)))
 stormdata$CROPDMGEXP <- as.vector(tolower(str_trim(stormdata$CROPDMGEXP)))
