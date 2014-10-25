@@ -101,6 +101,7 @@ storm <- storm[, PUBLICSAFTY := storm$FATALITIES + storm$INJURIES]
 stormdata$ECONMYDAMAGE <-
 
 # Group injuries and fatalies as population_safty
+arr
 
 
 # Group property damage and crop damage as econmoic_damage
