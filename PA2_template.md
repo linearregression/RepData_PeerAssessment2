@@ -83,8 +83,8 @@ Unadjusted dollar amounts, based on the value and suffix.
 Suffix (h,k,m,b) is converted to unadjusted multipler; (+,-,? and empty sring) is converted to multipler of 1. Numeric characters converted to integer multipler.
 
 # New data columns
-Injuries and fatalies are grouped as new column population_safety.
-Property and crop damages are grouped under economic_damage.
+Injuries and fatalies are grouped as new column PUBLICSAFTY.
+Property and crop damages are grouped under ECONMYDAMAGE.
 
 
 ```r
@@ -99,74 +99,35 @@ require(stringr) || install.packages('stringr')
 propertydamage_exp <- unique(stormdata$PROPDMGEXP)
 cropdamage_exp <- unique(stormdata$CROPDMGEXP)
 
-
 stormdata$YEAR <-format(as.Date(stormdata$BGN_DATE , "%m/%d/%Y"), "%Y", drop0trailing=TRUE)
 # only consider fro year 1995 to 2014
 stormdata <- stormdata[stormdata$YEAR >= 1995 & stormdata$YEAR <= 2014,] 
+
 # Trim leading and trailing whitespace, tolower case.
 stormdata$EVTYPE <- as.vector(tolower(str_trim(stormdata$EVTYPE)))
 stormdata$PROPDMGEXP <- as.vector(tolower(str_trim(stormdata$PROPDMGEXP)))
 stormdata$CROPDMGEXP <- as.vector(tolower(str_trim(stormdata$CROPDMGEXP)))
+stormdata$FATALITIES <- as.vector(as.numeric(stormdata$FATALITIES))
+stormdata$INJURIES <- as.vector(as.numeric(stormdata$INJURIES))
 
-# Crete
-
+storm <- data.table(stormdata)
+#rm(stormdata)
+# Create new data columns
+storm <- storm[, PUBLICSAFTY := storm$FATALITIES + storm$INJURIES]
 # Group injuries and fatalies as population_safty
+storm <- group_by(storm, EVTYPE)
 
 
 # Group property damage and crop damage as econmoic_damage
-
-
-# Summarise population_safety by events & rank total  
-
-
-# Summarise econmoic_damage by events & rank total  
 ```
 
 
 The scope of events related harmful to population health are:
 
 # Analysis
-
-# Results.
-Tornado and flood causes most economic damage, as well as damage to population health.
+Group data for population safety and ecnomic damages by events. Rank and plot results.
 
 
 
 
-## Publishing Results
-
-```r
-require(knitr) || install.packages('knitr')
-```
-
-```
-## [1] TRUE
-```
-
-```r
-require(markdown) || install.packages('markowns')
-```
-
-```
-## Loading required package: markdown
-```
-
-```
-## [1] TRUE
-```
-
-```r
-title <- "NOAA Weather Population Health And Economic Damage Analysis"
-html <- "PA2_template.html"
-result <- rpubsUpload(title, html)
-if (!is.null(result$continueUrl)) 
-    browseURL(result$continueUrl) else stop(result$error)
-
-# update the same document with a new title
-updateResult <- rpubsUpload(title, html, result$id)
-```
-
-```
-## Error in readBin(conn, what = "raw", n = contentLength): invalid 'n' argument
-```
 
