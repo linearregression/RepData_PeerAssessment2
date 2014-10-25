@@ -82,13 +82,21 @@ cropdamage_exp <- unique(stormdata$CROPDMGEXP)
 stormdata$YEAR <-format(as.Date(stormdata$BGN_DATE , "%m/%d/%Y"), "%Y", drop0trailing=TRUE)
 # only consider fro year 1995 to 2014
 stormdata <- stormdata[stormdata$YEAR >= 1995 & stormdata$YEAR <= 2014,] 
+
 # Trim leading and trailing whitespace, tolower case.
 stormdata$EVTYPE <- as.vector(tolower(str_trim(stormdata$EVTYPE)))
 stormdata$PROPDMGEXP <- as.vector(tolower(str_trim(stormdata$PROPDMGEXP)))
 stormdata$CROPDMGEXP <- as.vector(tolower(str_trim(stormdata$CROPDMGEXP)))
+storm$FATALITIES <- as.vector(as.numeric(storm$FATALITIES))
+storm$INJURIES <- as.vector(as.numeric(storm$INJURIES))
 
+storm <- data.table(stormdata)
+rm(stormdata)
 # Create new data columns
-stormdata$PUBLICSAFTY <- 
+storm <- storm[, PUBLICSAFTY := storm$FATALITIES + storm$INJURIES]
+
+
+
 
 stormdata$ECONMYDAMAGE <-
 
@@ -113,6 +121,7 @@ require(plyr) || install.packages('plyr')
 require(dplyr) || install.packages('dplyr')
 require(reshape2) || install.packages('reshape')
 require(ggplot2) || install.packages('ggplot2')
+
 
 
 # Summarise population_safety by events & rank total  
