@@ -82,14 +82,13 @@ Some property[PPROP] and crop[CROP] damage dollar amounts are recorded in two co
 Unadjusted dollar amounts, based on the value and suffix. 
 Suffix (h,k,m,b) is converted to unadjusted multipler; (+,-,? and empty sring) is converted to multipler of 1. Numeric characters converted to integer multipler.
 
+# New data columns
+Injuries and fatalies are grouped as new column population_safety.
+Property and crop damages are grouped under economic_damage.
 
 
 ```r
 require(stringr) || install.packages('stringr')
-```
-
-```
-## Loading required package: stringr
 ```
 
 ```
@@ -109,16 +108,18 @@ stormdata$EVTYPE <- as.vector(tolower(str_trim(stormdata$EVTYPE)))
 stormdata$PROPDMGEXP <- as.vector(tolower(str_trim(stormdata$PROPDMGEXP)))
 stormdata$CROPDMGEXP <- as.vector(tolower(str_trim(stormdata$CROPDMGEXP)))
 
+# Crete
+
 # Group injuries and fatalies as population_safty
 
 
 # Group property damage and crop damage as econmoic_damage
 
 
-# Summarise population_safty by events & rank total  
+# Summarise population_safety by events & rank total  
 
 
-# Summarise econmoic_damageby events & rank total  
+# Summarise econmoic_damage by events & rank total  
 ```
 
 
@@ -143,30 +144,29 @@ require(knitr) || install.packages('knitr')
 ```
 
 ```r
+require(markdown) || install.packages('markowns')
+```
+
+```
+## Loading required package: markdown
+```
+
+```
+## [1] TRUE
+```
+
+```r
 title <- "NOAA Weather Population Health And Economic Damage Analysis"
 html <- "PA2_template.html"
 result <- rpubsUpload(title, html)
-```
-
-```
-## Error in eval(expr, envir, enclos): could not find function "rpubsUpload"
-```
-
-```r
 if (!is.null(result$continueUrl)) 
     browseURL(result$continueUrl) else stop(result$error)
-```
 
-```
-## Error in eval(expr, envir, enclos): object 'result' not found
-```
-
-```r
 # update the same document with a new title
 updateResult <- rpubsUpload(title, html, result$id)
 ```
 
 ```
-## Error in eval(expr, envir, enclos): could not find function "rpubsUpload"
+## Error in readBin(conn, what = "raw", n = contentLength): invalid 'n' argument
 ```
 
