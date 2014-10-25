@@ -97,9 +97,20 @@ storm <- storm[, PUBLICSAFTY := storm$FATALITIES + storm$INJURIES]
 # Group injuries and fatalies as population_safty
 storm <- group_by(storm, EVTYPE)
 
+# Create a new multipler column
+storm$MULTIPLIER <- 1.0
+storm[storm$PROPDMGEXP == 'k', ]$PROPMUL <- 1000.0
+storm[storm$PROPDMGEXP == 'm', ]$PROPMUL <- 1000000.0
+storm[storm$PROPDMGEXP == 'b', ]$PROPMUL <- 1000000000.0
+storm$CROPMUL <- 1.0
+storm[storm$CROPDMGEXP == 'k', ]$CROPMUL <- 1000.0
+storm[storm$CROPDMGEXP == 'm', ]$CROPMUL <- 1000000.0
+storm[storm$CROPDMGEXP == 'b', ]$CROPMUL <- 1000000000.0
+
 
 # Group property damage and crop damage as econmoic_damage
-
+# Create
+storm <- storm[, DAMAGE:= (storm$PROPDMG*storm$PROPDMGEXP + storm$INJURIES)]
 
 
 
@@ -123,7 +134,6 @@ public <- aggregate(PUBLICSAFTY ~ EVTYPE, data=storm, FUN=sum)
 public <- arrange(public, desc(PUBLICSAFTY))
 # Display Top 10 results
 public <- top_n(public, 10)
-
 
 # Summarise econmoic_damage by events & rank total  
 # Consider top 10 
