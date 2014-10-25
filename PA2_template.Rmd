@@ -93,11 +93,8 @@ storm <- data.table(stormdata)
 #rm(stormdata)
 # Create new data columns
 storm <- storm[, PUBLICSAFTY := storm$FATALITIES + storm$INJURIES]
-storm <- group_by(storm, EVTYPE)
-
-
 # Group injuries and fatalies as population_safty
-
+storm <- group_by(storm, EVTYPE)
 
 
 # Group property damage and crop damage as econmoic_damage
