@@ -55,9 +55,9 @@ stormdata <- read.csv2(file=zipData, header=TRUE, sep=",", stringsAsFactor=FALSE
 # Find how many events
 events <- unique(stormdata$EVTYPE)
 population_health <- c("FATALITIES", "INJURIES")
-# Get the Unit exponent for dollar amount damage
-propertydamage_exp <- unique(stormdata$PROPDMGEXP))
-cropdamage_exp <- unique(stormdata$CROPDMGEXP))
+# Get the Unit exponent for dollar amount damage of property and crops
+propertydamage_exp <- unique(stormdata$PROPDMGEXP)
+cropdamage_exp <- unique(stormdata$CROPDMGEXP)
 
 ```
 # Cleanse data
