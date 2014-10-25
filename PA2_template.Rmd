@@ -161,7 +161,7 @@ g <- g + ggtitle("Top 10 Weather Events Economic damages in US - 1995 to 2014")
 g <- g + ylab("Economic damages (dollars)")
 g <- g + geom_bar(stat="identity", fill="red")
 suppressWarnings(print(g))
-rm(public)
+rm(list=ls())
 
 ```
 # Results.

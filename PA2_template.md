@@ -281,49 +281,4 @@ Tornado is most detrimetal to public safety.
 Hurricane/Typhon is caused most economy damage.
 
 
-## Publishing Results
-
-```r
-require(knitr) || install.packages('knitr')
-```
-
-```
-## [1] TRUE
-```
-
-```r
-require(markdown) || install.packages('markowns')
-```
-
-```
-## [1] TRUE
-```
-
-```r
-title <- "NOAA Weather Population Health And Economic Damage Analysis"
-html <- "PA2_template.html"
-result <- rpubsUpload(title, html)
-```
-
-```
-## Error in readBin(conn, what = "raw", n = contentLength): invalid 'n' argument
-```
-
-```r
-if (!is.null(result$continueUrl)) 
-    browseURL(result$continueUrl) else stop(result$error)
-```
-
-```
-## Error in eval(expr, envir, enclos): object 'result' not found
-```
-
-```r
-# update the same document with a new title
-updateResult <- rpubsUpload(title, html, result$id)
-```
-
-```
-## Error in rpubsUpload(title, html, result$id): object 'result' not found
-```
 

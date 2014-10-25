@@ -452,42 +452,6 @@ suppressWarnings(print(g))
 Tornado is most detrimetal to public safety.
 Hurricane/Typhon is caused most economy damage.</p>
 
-<h2>Publishing Results</h2>
-
-<pre><code class="r">require(knitr) || install.packages(&#39;knitr&#39;)
-</code></pre>
-
-<pre><code>## [1] TRUE
-</code></pre>
-
-<pre><code class="r">require(markdown) || install.packages(&#39;markowns&#39;)
-</code></pre>
-
-<pre><code>## [1] TRUE
-</code></pre>
-
-<pre><code class="r">title &lt;- &quot;NOAA Weather Population Health And Economic Damage Analysis&quot;
-html &lt;- &quot;PA2_template.html&quot;
-result &lt;- rpubsUpload(title, html)
-</code></pre>
-
-<pre><code>## Error in readBin(conn, what = &quot;raw&quot;, n = contentLength): invalid &#39;n&#39; argument
-</code></pre>
-
-<pre><code class="r">if (!is.null(result$continueUrl)) 
-    browseURL(result$continueUrl) else stop(result$error)
-</code></pre>
-
-<pre><code>## Error in eval(expr, envir, enclos): object &#39;result&#39; not found
-</code></pre>
-
-<pre><code class="r"># update the same document with a new title
-updateResult &lt;- rpubsUpload(title, html, result$id)
-</code></pre>
-
-<pre><code>## Error in rpubsUpload(title, html, result$id): object &#39;result&#39; not found
-</code></pre>
-
 </body>
 
 </html>
