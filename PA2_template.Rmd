@@ -88,9 +88,18 @@ stormdata$EVTYPE <- as.vector(tolower(str_trim(stormdata$EVTYPE)))
 stormdata$PROPDMGEXP <- as.vector(tolower(str_trim(stormdata$PROPDMGEXP)))
 stormdata$CROPDMGEXP <- as.vector(tolower(str_trim(stormdata$CROPDMGEXP)))
 
-datarange <- 
-stormdata$PropertyDamage <-
-stormdata$cropDamage <- 
+# Group injuries and fatalies as population_safty
+
+
+# Group property damage and crop damage as econmoic_damage
+
+
+# Summarise population_safty by events & rank total  
+
+
+# Summarise econmoic_damageby events & rank total  
+
+
 
 ```
 
