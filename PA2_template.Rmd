@@ -82,6 +82,9 @@ cropdamage_exp <- unique(stormdata$CROPDMGEXP)
 
 
 stormdata$YEAR <-format(as.Date(stormdata$BGN_DATE , "%m/%d/%Y"), "%Y", drop0trailing=TRUE)
+# only consider fro year 1995 to 2014
+stormdata <- stormdata[stormdata$YEAR >= 1995 & stormdata$YEAR <= 2014,] 
+
 stormdata$EVTYPE <- as.vector(tolower(str_trim(stormdata$EVTYPE)))
 stormdata$PROPDMGEXP <- as.vector(tolower(str_trim(stormdata$PROPDMGEXP)))
 stormdata$CROPDMGEXP <- as.vector(tolower(str_trim(stormdata$CROPDMGEXP)))
