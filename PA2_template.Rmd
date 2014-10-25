@@ -112,6 +112,7 @@ Tornado causes most economic damage, as well as damage to population health.
 
 
 
+
 ## Publishing Results
 ``` {r rpublish, echo=TRUE}
 title <- "NOAA Weather Population Health And Economic Damage Analysis"
