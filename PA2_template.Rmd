@@ -85,8 +85,8 @@ stormdata <- stormdata[stormdata$YEAR >= 1995 & stormdata$YEAR <= 2014,]
 
 # Trim leading and trailing whitespace, tolower case.
 stormdata$EVTYPE <- as.vector(tolower(str_trim(stormdata$EVTYPE)))
-stormdata$PROPDMG <- as.vector(as.numeric(str_trim(storm$PROPDMG))  
-stormdata$CROPDMG <- as.vector(as.numeric(str_trim(storm$CROPDMG))  
+stormdata$PROPDMG <- as.vector(as.numeric(str_trim(storm$PROPDMG)))  
+stormdata$CROPDMG <- as.vector(as.numeric(str_trim(storm$CROPDMG)))  
 stormdata$PROPDMGEXP <- as.vector(tolower(str_trim(stormdata$PROPDMGEXP)))
 stormdata$CROPDMGEXP <- as.vector(tolower(str_trim(stormdata$CROPDMGEXP)))
 stormdata$FATALITIES <- as.vector(as.numeric(stormdata$FATALITIES))
@@ -113,13 +113,8 @@ storm[storm$CROPDMGEXP == 'b', ]$CROPMUL <- 1000000000.0
 
 
 # Group property damage and crop damage as econmoic_damage
-# Create
-calculate_damage <- function(data) {
-    ret <- (data$PROPDMG * data$PROPMUL) +
-           (data$CROPDMG * data$CROPDMGEXP)
-    return(ret)     
-}
-storm <- storm[, DAMAGE:= calculate_damage(storm)]
+
+storm <- storm[, DAMAGE:= (storm$PROPDMG * storm$PROPMUL) +  (storm$CROPDMG * storm$CROPMUL)]
 
 
 
