@@ -78,7 +78,6 @@ require(stringr) || install.packages('stringr')
 propertydamage_exp <- unique(stormdata$PROPDMGEXP)
 cropdamage_exp <- unique(stormdata$CROPDMGEXP)
 
-
 stormdata$YEAR <-format(as.Date(stormdata$BGN_DATE , "%m/%d/%Y"), "%Y", drop0trailing=TRUE)
 # only consider fro year 1995 to 2014
 stormdata <- stormdata[stormdata$YEAR >= 1995 & stormdata$YEAR <= 2014,] 
@@ -94,6 +93,8 @@ storm <- data.table(stormdata)
 rm(stormdata)
 # Create new data columns
 storm <- storm[, PUBLICSAFTY := storm$FATALITIES + storm$INJURIES]
+storm <- group_by(storm,  EVTYPE)
+
 
 
 
@@ -101,7 +102,7 @@ storm <- storm[, PUBLICSAFTY := storm$FATALITIES + storm$INJURIES]
 stormdata$ECONMYDAMAGE <-
 
 # Group injuries and fatalies as population_safty
-arr
+
 
 
 # Group property damage and crop damage as econmoic_damage
