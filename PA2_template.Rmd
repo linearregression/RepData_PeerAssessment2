@@ -119,7 +119,8 @@ require(dplyr) || install.packages('dplyr')
 require(reshape2) || install.packages('reshape')
 require(ggplot2) || install.packages('ggplot2')
 
-# Summarise population_safety by events & rank total  
+# Summarise population_safety by events & rank total 
+# Consider top 10 
 public <- aggregate(PUBLICSAFTY ~ EVTYPE, data=storm, FUN=sum)
 public <- arrange(public, desc(PUBLICSAFTY)
 # Display Top 5 results
@@ -127,7 +128,7 @@ public <- top_n(public, 10)
 
 
 # Summarise econmoic_damage by events & rank total  
-
+# Consider top 10 
 
 
 # Plot poplulation safty top 10 result
@@ -136,8 +137,8 @@ g <- g + theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
 g <- g + ggtitle("Negative Public Safety Events in USA - 19950 to 2014")
 g <- g + ylab("Negative Public Safety Events")
 g <- g + geom_bar(stat="identity", fill="yellow")
-#suppressWarnings(print(g))
-print(g)
+suppressWarnings(print(g))
+rm(public)
 
 3 Plot economic damage result
 pp = ggplot(b2_melt, aes(x=EVTYPE,y=value, fill=Type))
