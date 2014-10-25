@@ -207,7 +207,10 @@ hr {
 
 <h1>Synopsis</h1>
 
-<p>From  NOAA storm data for years 1950-2011, an emprical comparison is performed toinvestigate which weathe events are most costly in terms of US dollars and havig most damages to population health.</p>
+<p>From  NOAA storm data for years 1950-2011, an emprical comparison is performed toinvestigate which weathe events are most costly in terms of US dollars and havig most damages to population health. </p>
+
+<p>Tornado is most detrimetal to public safety.
+Hurricane/Typhon is caused most economy damage.</p>
 
 <p>No inflation adjustment in dollars is made. Comparison is later restricted from 1995 to 2014 because of events collections changes, and missing data cannot be treated as zero.</p>
 
@@ -284,8 +287,8 @@ Suffix (h,k,m,b) is converted to unadjusted multipler; (+,-,? and empty sring) i
 
 <h1>New data columns</h1>
 
-<p>Injuries and fatalies are grouped as new column population_safety.
-Property and crop damages are grouped under economic_damage.</p>
+<p>Injuries and fatalies are grouped as new column PUBLICSAFTY.
+Property and crop damages are grouped under ECONMYDAMAGE.</p>
 
 <pre><code class="r">require(stringr) || install.packages(&#39;stringr&#39;)
 </code></pre>
@@ -296,36 +299,158 @@ Property and crop damages are grouped under economic_damage.</p>
 <pre><code class="r">propertydamage_exp &lt;- unique(stormdata$PROPDMGEXP)
 cropdamage_exp &lt;- unique(stormdata$CROPDMGEXP)
 
-
 stormdata$YEAR &lt;-format(as.Date(stormdata$BGN_DATE , &quot;%m/%d/%Y&quot;), &quot;%Y&quot;, drop0trailing=TRUE)
 # only consider fro year 1995 to 2014
 stormdata &lt;- stormdata[stormdata$YEAR &gt;= 1995 &amp; stormdata$YEAR &lt;= 2014,] 
+
 # Trim leading and trailing whitespace, tolower case.
 stormdata$EVTYPE &lt;- as.vector(tolower(str_trim(stormdata$EVTYPE)))
-stormdata$PROPDMGEXP &lt;- as.vector(tolower(str_trim(stormdata$PROPDMGEXP)))
+stormdata$PROPDMG &lt;- as.vector(as.numeric(str_trim(storm$PROPDMG)))  
+</code></pre>
+
+<pre><code>## Error in check_string(string): object &#39;storm&#39; not found
+</code></pre>
+
+<pre><code class="r">stormdata$CROPDMG &lt;- as.vector(as.numeric(str_trim(storm$CROPDMG)))  
+</code></pre>
+
+<pre><code>## Error in check_string(string): object &#39;storm&#39; not found
+</code></pre>
+
+<pre><code class="r">stormdata$PROPDMGEXP &lt;- as.vector(tolower(str_trim(stormdata$PROPDMGEXP)))
 stormdata$CROPDMGEXP &lt;- as.vector(tolower(str_trim(stormdata$CROPDMGEXP)))
+stormdata$FATALITIES &lt;- as.vector(as.numeric(stormdata$FATALITIES))
+stormdata$INJURIES &lt;- as.vector(as.numeric(stormdata$INJURIES))
 
-# Crete
-
+storm &lt;- data.table(stormdata)
+#rm(stormdata)
+# Create new data columns
+storm &lt;- storm[, PUBLICSAFTY := storm$FATALITIES + storm$INJURIES]
 # Group injuries and fatalies as population_safty
+storm &lt;- group_by(storm, EVTYPE)
+
+# Create a new multipler column
+storm$PROPMUL &lt;- 1.0
+storm[storm$PROPDMGEXP == &#39;h&#39;, ]$PROPMUL &lt;- 1000.0
+storm[storm$PROPDMGEXP == &#39;k&#39;, ]$PROPMUL &lt;- 1000.0
+storm[storm$PROPDMGEXP == &#39;m&#39;, ]$PROPMUL &lt;- 1000000.0
+storm[storm$PROPDMGEXP == &#39;b&#39;, ]$PROPMUL &lt;- 1000000000.0
+storm$CROPMUL &lt;- 1.0
+storm[storm$CROPDMGEXP == &#39;h&#39;, ]$CROPMUL &lt;- 100.0
+storm[storm$CROPDMGEXP == &#39;k&#39;, ]$CROPMUL &lt;- 1000.0
+storm[storm$CROPDMGEXP == &#39;m&#39;, ]$CROPMUL &lt;- 1000000.0
+storm[storm$CROPDMGEXP == &#39;b&#39;, ]$CROPMUL &lt;- 1000000000.0
 
 
 # Group property damage and crop damage as econmoic_damage
+storm &lt;- storm[, DAMAGE:= (storm$PROPDMG * storm$PROPMUL) +  (storm$CROPDMG * storm$CROPMUL)]
+</code></pre>
 
-
-# Summarise population_safety by events &amp; rank total  
-
-
-# Summarise econmoic_damage by events &amp; rank total  
+<pre><code>## Error in storm$PROPDMG * storm$PROPMUL: non-numeric argument to binary operator
 </code></pre>
 
 <p>The scope of events related harmful to population health are:</p>
 
 <h1>Analysis</h1>
 
+<p>Group data for population safety and ecnomic damages by events. Rank and plot results.</p>
+
+<pre><code class="r">require(plyr) || install.packages(&#39;plyr&#39;)
+</code></pre>
+
+<pre><code>## [1] TRUE
+</code></pre>
+
+<pre><code class="r">require(dplyr) || install.packages(&#39;dplyr&#39;)
+</code></pre>
+
+<pre><code>## [1] TRUE
+</code></pre>
+
+<pre><code class="r">require(reshape2) || install.packages(&#39;reshape&#39;)
+</code></pre>
+
+<pre><code>## [1] TRUE
+</code></pre>
+
+<pre><code class="r">require(ggplot2) || install.packages(&#39;ggplot2&#39;)
+</code></pre>
+
+<pre><code>## [1] TRUE
+</code></pre>
+
+<pre><code class="r"># Summarise population_safety by events &amp; rank total 
+# Consider top 10 
+public &lt;- aggregate(PUBLICSAFTY ~ EVTYPE, data=storm, FUN=sum)
+public &lt;- arrange(public, desc(PUBLICSAFTY))
+# Display Top 10 results
+public &lt;- top_n(public, 10)
+</code></pre>
+
+<pre><code>## Selecting by PUBLICSAFTY
+</code></pre>
+
+<pre><code class="r"># Summarise econmoic_damage by events &amp; rank total  
+# Consider top 10 
+damage &lt;- aggregate(DAMAGE ~ EVTYPE, data=storm, FUN=sum)
+</code></pre>
+
+<pre><code>## Error in eval(expr, envir, enclos): object &#39;DAMAGE&#39; not found
+</code></pre>
+
+<pre><code class="r">damage &lt;- arrange(damage, desc(DAMAGE))
+</code></pre>
+
+<pre><code>## Error in arrange(damage, desc(DAMAGE)): object &#39;damage&#39; not found
+</code></pre>
+
+<pre><code class="r"># Display Top 10 results
+damage &lt;- top_n(damage, 10)
+</code></pre>
+
+<pre><code>## Error in tbl_vars(x): object &#39;damage&#39; not found
+</code></pre>
+
+<pre><code class="r"># Plot poplulation safty top 10 result
+g &lt;- ggplot(public , aes(x=EVTYPE, y=PUBLICSAFTY))
+g &lt;- g + theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
+g &lt;- g + ggtitle(&quot;Top 10 Weather induced Negative Public Safety Events in US - 1995 to 2014&quot;)
+g &lt;- g + ylab(&quot;Negative Public Safety Events&quot;)
+g &lt;- g + geom_bar(stat=&quot;identity&quot;, fill=&quot;yellow&quot;)
+suppressWarnings(print(g))
+</code></pre>
+
+<p><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAfgAAAH4CAMAAACR9g9NAAAAElBMVEUAAAB/f3/l5eXy8vL//wD///8croowAAAACXBIWXMAAAsSAAALEgHS3X78AAASaElEQVR4nO2di7ajuA5EnbmX///lmc6TN5KtakmotGZ15iROyeWNwQaC28QoGc27AgyfIPiiQfBFg+CLBsEXDYIvGgRfNAi+aBB80SD4okHwRYPgiwbBFw2CLxoEXzQIvmgQfNE4At/+xMW35gXaiZhy4zor3hb/07/VLu39VE8sL9vjrHV+GYa71cfmuVabVfD1cp39Cu7+R9/6bGq4p3HVRPLEQvBt8z+7JXaKtaPvtW25nQ1nrw6nFbx6+532fDNvbVNyVXbnqz3g2zTLtKzhrgakx7eTktcJL8BfSrazD6/rIG6RfY7rMgDw7x3Hes92DH6zw5l+X98XWxeZbeALsfdnc7dt/dki7WzPtNlbrpvp+4359/aOBl9Ls7/m7202pkX2d6KP8ubwMWuJbT2P45P93UCtrVV28p2D/+Rdd689nwtk75dZO85w7on9irTlZrt4WdS7rT6bfzJ3t8z+a4r2/XzDbetv3mhtjXq20bR1+UX2z7f2vrBsiZWB5SayPoB/qL5Lbont5JOB363h0ud3O/sNLlYJ2+LNs0TL7fz9vW2Ham3+WZtWaed1/GVf2N74W4Pf1HRpbM/mMsMy+3JL2Ywl95p1Vdnd2LVlAn63ky5Ttl9fPegKRykvwS81F399NXd64MzwZnPrBb9jbJr/tbMrnWffVnCRJR74vWP8sjXn4H+75fb9a9NoB4m+Krt7/FW77m0iv7Qzw23x97JpmmhXv2Ns2QxtWg9Cvv/T1tVdtstuS+zaPIoVzI3bvXwXars7589Oc28evxqIzY+kq4HRQmxWZPnSpo3mQb5N2t+hcGZl3VTvkcniC7OXZT1/GdrizVm/aPPym+zfvxe13m2JTdpDUr/qzqqyHgVsVI7Bz78mKeQZFz2iUCXEcQ/wpz2iViWkkaemDNMYB//PURx/0l2yrKRBcoLPKEnwRSUJvqgkwReVJPiikgRfVJLgi0oSfFFJgi8qSfBFJQm+qCTBF5Uk+KKSBF9UkuATS/5fFKDkBO8nSfAAVxkkCR7gKoMkwQNcZZAkeICrDJIED3CVQZLgAa4ySBI8wFUGSYIHuMogeTfw/zuK40+6S6aWlIEHJf/vA2vw+m0PsDlnkLxbj9dXAeAqgyTBA1xlkCR4gKsMkgQPcJVBkuABrjJIEjzAVQZJgge4yiBJ8ABXGSQJHuAqgyTBA1xlkCR4gKsMkgQPcJVBkuABrjJIEjzAVQZJgge4yiBJ8ABXGSQJHuAqgyTBA1xlkCR4gKsMkgQPcJVBkuABrjJIEjzAVQZJgge4yiBJ8ABXGSQJHuAqg2QS8I//4vU6Hb4QvKZgDvCP9z+v//ZfCF5VMBX4sxeC1xXMAX4ieGvJPOAf5x2f4HUFs4B/PKZL8J8RIEMQMvB/qzbHo/rfv+zxJpI5evzj98pRvY1kEvCP926c83gryRzg5aGvAsBVBsnQ4Jt+U9BXAeAqg2Rk8E/uSvL6KgBcZZAkeICrDJKxwev39foqAFxlkCR4gKsMkpHBc3AHlAwNviP0VQC4yiAZHTx7PEgyOnge40GSkcE3gsdJEjzAVQbJuODbK3TcCV5aMC74vjG+vgoAVxkkI4PvCX0VAK4ySIYG37Gv11cB4CqDZGTw3NUDJQke4CqDJMEDXGWQjAy+h7y+CgBXGSQjg++ZyOurAHCVQTIy+J7QVwHgKoNkaPBNfecVwUsLRgbPO3CAkgQPcJVBkuABrjJIEjzAVQbJyOCnjsuy+gWtAWtkZ5CUgQcl5zLifpKRe7y+vxO8uGBk8E/2BI+RDA6egzuUZHDw7PEoycjgeYwHSkYG3xP6KgBcZZAkeICrDJJhwbftWwRvKEnwAFcZJEODbxPBoyQJHuAqgyTBA1xlkIwLvnX9alJfBYCrDJJhwXeGvgoAVxkkCR7gKoMkwQNcZZAkeICrDJIED3CVQZLgAa4ySBI8wFUGSYIHuMogGRl8zxkcfRUArjJIRgY/dZy01VcB4CqDZHDw6t/S6KsAcJVBkuABrjJIpgH/WnzsbBUygtcUjAz+NbJrP7in6w4SvKpgZPCzeEwz8Fxi1EAyOvjvOy/wzz09wRtIRgf/fet7aOeiwiaSkcEvnlf/RctlxE1CBv5v1WYM/J/Qb3uAzTmDZNwevzph+x3cPTiqt5CMC37x13sC/9mZcx5/a/A9oa8CwFUGydDg+WRLnGRk8HzcGVCS4AGuMkgSPMBVBkmCB7jKIBkZfM+TLfVVALjKIBkafEfoqwBwlUEyLvi+jUBfBYCrDJJhwXd2fn0VAK4ySIYGz1WocJIED3CVQTIs+IlPxIBKxgW//ZPgDSVDg+8IfRUArjJIhgbPXT1OMjL4NvGyLEwyOnieqwdJEjzAVQZJgge4yiAZGfzEpUlwksHBq0NfBYCrDJJxwT/P2bLHoyTDgufTq7GSBA9wlUGS4AGuMkgSPMBVBsmw4N8DO+3gTr+gNWCN7AySMvCg5FxG3E8ybo8neKgkwQNcZZAkeICrDJIED3CVQZLgAa4ySBI8wFUGSYIHuMogGRq8/j4MgpcWjAy+bd8ieCtJgge4yiBJ8ABXGSQJHuAqg2Rk8HwUClAyNPiO0FcB4CqDZHjw3NVjJAke4CqDZFzwbeKDEYCSccFzVA+VjAz+6C2CN5AMD14Z+ioAXGWQJHiAqwyS4cFzV4+RJHiAqwySYcE3PucOKhkX/PYtgjeUDAt+/dbegmNcfqy/YHjwH+6zxQa54KCBZBLwj/lKk1xi1EAyNPiDJUYJ3kAyMvjFuXqCt5W8E3guI64IGfi/VRv2+L8mGbnHL35QwVG9rWRY8Mszd+9lxDmPN5MMC74z9FUAuMogGRk8z9UDJSOD33+H4E0ko4PnRRqQJMEDXGWQJHiAqwySkcF3jO0IXlowMvie0FcB4CqDZFzw+t5O8IqCYcH3PMGY4OUFCR7gKoMkwQNcZZAkeICrDJJxwfO+eqhkWPCdoa8CwFUGSYIHuMogeU/wzq4ySBI8wFUGSYIHuMogSfAAVxkkCR7gKoMkwQNcZZAMDb61znvuCP6yYGTwrWOJihCuMkgSPMBVBkmCB7jKIEnwAFcZJCOD71+ogOAvC4YG3xEhFkfPIOncRKfge263DLE5Z5B0bqJT8E/2BI+RDA4+zuDubttScPBxejzBGya/ms5FOsYTvGHyTBdpCN4wOcF3F7w/eA7uMJIEL6wswRsmPwU/su4cwV8WjAt+ZN05gr8sGBn80VsEbyAZHrwyYK4I3jA5wXcXvD14nrIFSUYHz2M8SDIyeI7qLUoSPMHPIy74rgdiELy0YFzwfWN8mCuCN0zO6Vx3wXuD57l6g5IJwbcp0I8mCd4wuQA8R/UgSYIXVpbgDZMTfHfBW4Of1rdXP06Xn7sx+JHkOcEv4/F7PV9pEuDKtaFGkicE39bvPWYvp2vLAly5NtRI8oTgnzv6+YzuMT339ASvSZ4QfFtP5V/Hd8Ey4jJXkyYAkq7JXf1s4gL8MyTLiMtcqbZSgKS84EjyO/R4gu9InhD86zl368Hdg6N6VfKM4DfxOYpzHi9PnhF8pCdbujbUSPKE4HnK1iI5wY+5cm2okeQEP+bKtaFGkhP8mCvXhhpJnhB8qCdbujbUSPKM4DsC5sq1oUaSZwM/tNIkwJVrQ40kzwZ+92+C1yfPCL57UWGAK9eGGkk+LAkxfgqev6SxSJ4PfNdIb7yhCH4lCTF+DJ6DO6Pk2cB3xnhDEfxKEmKc4EUFR5IT/FhlAZLygiPJCX6ssgBJecGR5AQ/VlmApLzgSHKCH6ssQFJecCQ5wY9VFiApLziSnODHKguQlBccSU7wY5V1bagRPwQ/VlnXhhrxQ/BjlXVtqBE/BD9WWdeGGvFD8GOuAJIISgBJgB+CN6cEkAT4AYDXrpFtW1AnKV92W54cIAnwc7GMeE/ANmeAJKJ7AiQBfrirN6cEkAT4IXhzSgBJgB+CN6cEkAT4IXhzSgBJgB+CN6cEkAT4IXhzSgBJgB+CN6cEkAT4IXhzSgBJgB+CN6cEkAT4IXhzSgBJgB+C96PkKknwBF8SvGdyV0mC90vuKknwfsldJQneL7mrJMH7JXeVJHi/5K6SBO+X3FWS4P2Su0oSvF9yV0mC90vuKknwfsldJQneL7mrJMH7JXeVNAI/svwYwJW4YBJKAEkb8EMLDgJciQsmoQSQNAE/tsQowJW4YBJKAEmC90vuKmkM/reMOCNZWPX4nRA/ccxg3Y27S8KXJiH4mJIxwO+N6p1d3V0yCPidebyzq7tLRgE/jxCu7i5J8EUlCb6oJMEXlST4opIEX1SS4ItKEnxRSYIvKknwRSUjgj8M+QVbccmykvbJCT6FJMEXlST4opKpwDMiB8EXDYIvGgRfNKDgBQONxycMS4qTf2XFcpclVbWUldMZl5bE9nhhXeWUzAfCCrlncuE2Is9t3ERiPzDwcleAkkpJYcGHDDyqlvIeLylH8MJIAt67x6uOSt9/jEqqxgKKIUMK8O7HeMVv6hSUpKMmVW7pSEx4iJf7sTcuD07nigYOvG4GItf0Sm48o8JM0gKcqxfvGDGDO/PkoCsvxpM098Hde8rrN6o3T466kGY9ZpEWJHixpDQI/lbgAY2vOS0jT+49nXvWQVoOMKsxnyGqzsBbnqvXSYr0Jk7nygZyOifd/CDTOfvkk/nuXnOxUXxQ8D9Xf7NjvKqg8aRTnlzsh+BFkg/xYVZeUlxLhSTBY6Zz4WtJ8Fl29ebDBmlJ7Ll6t5Ke1700YZ/bfXDHiB0Rrs49S9uWBFz3si+IkHyWlhSKcCOGrrh4JGabF+DHtYm8wcsvS2suYDuDtz69KpcMMLiTghcXl5d0By8sjujx/uCVthCzGtvE8oLmd8vIf/UhP9ODAa+7r8gtueroYe8H0URiOU7nioY7eMSMT5UfMuf00XtrpjiB487dsQ4w7r6DO1nIG16HyDy/7qS+OLd1ELx1/jTghft6b/CTfGCNmSkIf/kMmaSg7KQAP/ke5+VTP/PUmFFLlsEdwyki3GzpGcozOHJNaUGRIuCgEOAOHO+Qje9QJ4HNL+cIg+CFh0WFFXGHl+vajwIJ3hw8e/ytwCsvpYkvy4oHA1mO8UmWGH/V8qqioKuNnk3E6VzRwO3q5Ruz25X7T355IfMjsvnQQSoY4GfS/gcE4XFWeH43x61HAR5p6gpePMB6YzcdBYpLA8b/1Xs8wVuH5hiPqsN1ZvlYXQ5eOGbR3u5nfHLXe1TvelvmpDrEirkDctuX9AbPcIoAgzu/U3zq/YzXiXVFE0kvigYAL50mIUJJyPraiyKv9AHKznfgKJ/e4XjpXrpTUvmpC143A3G9nOP1VH1NaJ7w4Q3+XQ1RIefreMYTT4KXRprrt8JwHtzxUSiMk4D+TNr4ZBMkVPeEep6MNK4lcnCnGIg6Duo1BxrEuTaApPeo3noGgghZctWJZcx0znpkGeCeuwzgV6/XhQnesiQgzHf1gGtOkOt4EQZ3HSfN7QLxu0Xz4NU5hlXE6PGOZ3AgP1V2PQPtfCOG8tKL3zEeIek3P/Xf1Qvt57kDRyNZG7xoj6eaKAECAt51liIMb/C/4k5hn9j3aqM0cZTBnVdAfhLnPVbNclmW4RDuj0Lx3itgerxvZDhl691IgEuD3pbygPdsKcBIzNGO4p5Qgr8T+ExX59xP4NiPwb1/7+8LXvMQN1gdZOlvd4yXBKdzRaP6CRxENT2f6el/IwbgBiREQO6T8t7mvS/LErxHsMeL4n7gJ/Z4SdwNvP8xPsmTLSE/dMvgnNO5olF9V/8Mw2p630omjvLz+D9xoxsxxAHc1cff6jVXszSiUwLytcGDRvXmkoDgrn4ieNPIYR8SGcZ2nM5VDfebLb0D8YuKDF3e/Q4c54D8kiZDEHwGSUAQfAZJQFQHf8sfVEii+tU51NguvHVO54pGefD2XZM9PkOAAIXnTvDJdM2C4HPpmkV18KjzqwQfPKqeqi8PvmxUBw95+FGGLl8d/J+oeMaW4P/EjZ6IIQ6Cnwi+bFTc11cHbz0Q4y9pGLGjPHhM9wzf4cuD57n6ooE6TU/wwYPgqwbicRgJBvW1wWPmXvGh/4nS4CsHwRcNgi8aBF80yoNvz3i1Q3v/+WqW9v3j/XqruJsfdbTZy/Kf79Zwyza6pSlN7IN/4Sb4G0f7vbbZGwR/9/gcvlfgXzv73zHeq3qwuJ8jZRz0+PdRflHkVnFLU5r4NkBbYib4mwfBF43vJP0EPOfxjNsEwRcNgi8aBF80CL5oEHzRIPiiQfBFg+CLBsEXDYIvGv8C6aTs+/F0XBAAAAAASUVORK5CYII=" alt="plot of chunk analysis"/> </p>
+
+<pre><code class="r">rm(public)
+
+# Plot economic damage result
+g &lt;- ggplot(damage , aes(x=EVTYPE, y=DAMAGE))
+</code></pre>
+
+<pre><code>## Error in ggplot(damage, aes(x = EVTYPE, y = DAMAGE)): object &#39;damage&#39; not found
+</code></pre>
+
+<pre><code class="r">g &lt;- g + theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
+g &lt;- g + ggtitle(&quot;Top 10 Weather Events Economic damages in US - 1995 to 2014&quot;)
+g &lt;- g + ylab(&quot;Economic damages (dollars)&quot;)
+g &lt;- g + geom_bar(stat=&quot;identity&quot;, fill=&quot;red&quot;)
+suppressWarnings(print(g))
+</code></pre>
+
+<p><img src="data:image/png;base64,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" alt="plot of chunk analysis"/> </p>
+
+<pre><code class="r">rm(public)
+</code></pre>
+
+<pre><code>## Warning in rm(public): object &#39;public&#39; not found
+</code></pre>
+
 <h1>Results.</h1>
 
-<p>Tornado and flood causes most economic damage, as well as damage to population health.</p>
+<p>From 1995-2014:
+Tornado is most detrimetal to public safety.
+Hurricane/Typhon is caused most economy damage.</p>
 
 <h2>Publishing Results</h2>
 
@@ -338,23 +463,29 @@ stormdata$CROPDMGEXP &lt;- as.vector(tolower(str_trim(stormdata$CROPDMGEXP)))
 <pre><code class="r">require(markdown) || install.packages(&#39;markowns&#39;)
 </code></pre>
 
-<pre><code>## Loading required package: markdown
-</code></pre>
-
 <pre><code>## [1] TRUE
 </code></pre>
 
 <pre><code class="r">title &lt;- &quot;NOAA Weather Population Health And Economic Damage Analysis&quot;
 html &lt;- &quot;PA2_template.html&quot;
 result &lt;- rpubsUpload(title, html)
-if (!is.null(result$continueUrl)) 
-    browseURL(result$continueUrl) else stop(result$error)
-
-# update the same document with a new title
-updateResult &lt;- rpubsUpload(title, html, result$id)
 </code></pre>
 
 <pre><code>## Error in readBin(conn, what = &quot;raw&quot;, n = contentLength): invalid &#39;n&#39; argument
+</code></pre>
+
+<pre><code class="r">if (!is.null(result$continueUrl)) 
+    browseURL(result$continueUrl) else stop(result$error)
+</code></pre>
+
+<pre><code>## Error in eval(expr, envir, enclos): object &#39;result&#39; not found
+</code></pre>
+
+<pre><code class="r"># update the same document with a new title
+updateResult &lt;- rpubsUpload(title, html, result$id)
+</code></pre>
+
+<pre><code>## Error in rpubsUpload(title, html, result$id): object &#39;result&#39; not found
 </code></pre>
 
 </body>
