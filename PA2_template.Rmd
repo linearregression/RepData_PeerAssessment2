@@ -94,9 +94,11 @@ storm <- data.table(stormdata)
 # Create new data columns
 storm <- storm[, PUBLICSAFTY := storm$FATALITIES + storm$INJURIES]
 storm <- group_by(storm, EVTYPE)
+public <- aggregate(PUBLICSAFTY ~ EVTYPE, data=storm, FUN=sum)
+public <- arrange(public, desc(PUBLICSAFTY)
 
-
-
+# Display Top 5 results
+top_n(public, 5)
 
 
 
