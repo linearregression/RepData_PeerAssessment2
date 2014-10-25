@@ -98,11 +98,13 @@ storm <- storm[, PUBLICSAFTY := storm$FATALITIES + storm$INJURIES]
 storm <- group_by(storm, EVTYPE)
 
 # Create a new multipler column
-storm$MULTIPLIER <- 1.0
+storm$PROPMUL <- 1.0
+storm[storm$PROPDMGEXP == 'h', ]$PROPMUL <- 1000.0
 storm[storm$PROPDMGEXP == 'k', ]$PROPMUL <- 1000.0
 storm[storm$PROPDMGEXP == 'm', ]$PROPMUL <- 1000000.0
 storm[storm$PROPDMGEXP == 'b', ]$PROPMUL <- 1000000000.0
 storm$CROPMUL <- 1.0
+storm[storm$CROPDMGEXP == 'h', ]$CROPMUL <- 100.0
 storm[storm$CROPDMGEXP == 'k', ]$CROPMUL <- 1000.0
 storm[storm$CROPDMGEXP == 'm', ]$CROPMUL <- 1000000.0
 storm[storm$CROPDMGEXP == 'b', ]$CROPMUL <- 1000000000.0
