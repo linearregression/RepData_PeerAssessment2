@@ -3,7 +3,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 
-<title>Title: NOAA Weather Population Health And Economic Damage Analysis from Storm</title>
+<title>Title</title>
 
 <script type="text/javascript">
 window.onload = function() {
@@ -201,26 +201,23 @@ hr {
 </head>
 
 <body>
-<h1>Title: NOAA Weather Population Health And Economic Damage Analysis from Storm</h1>
+<h1>Title</h1>
+
+<p>Analysis of NOAA weather events for population health effects and economic damage</p>
 
 <h1>Synopsis</h1>
 
-<p>An analysis of 
-U.S. National Oceanic and Atmospheric Administration&#39;s (NOAA) storm database. This database tracks characteristics of major storms and weather events in the United States, including when and where they occur, as well as estimates of any fatalities, injuries, and property damage.</p>
+<p>From  NOAA storm data for years 1950-2011, an emprical comparison is performed toinvestigate which weathe events are most costly in terms of US dollars and havig most damages to population health.</p>
 
-<ul>
-<li>which types of events (as indicated in the EVTYPE variable) are most harmful with respect to population health?</li>
-<li>which types of events have the greatest economic consequences?</li>
-</ul>
+<p>No inflation adjustment in dollars is made. Comparison is later restricted from 1995 to 2014 because of events collections changes, and missing data cannot be treated as zero.</p>
 
 <p>For background of project, please refer to <a href="https://github.com/linearregression/RepData_PeerAssessment2/blob/master/README.md">README.md</a></p>
 
 <h1>Data Processing</h1>
 
-<h2>Download data and unzip locally</h2>
+<h2>Download data from source</h2>
 
 <pre><code class="r">rm(list=ls())
-require(utils)
 targetfile &lt;- &#39;StormData.csv&#39;
 zipData &lt;- paste(targetfile,&#39;.bz2&#39;, sep=&#39;&#39;)
 
@@ -232,39 +229,128 @@ if(!file.exists(zipData)) {
 
 <h2>Loading and preprocessing the data</h2>
 
+<p>For the two questions to research only columns are relevant:
+BGN_DATE for time,
+FATALITIES, &ldquo;INJURIES for population health
+PROPDMG, PROPDMGEXP, CROPDMG, CROPDMGEXP - for property and crop damages and their corresponding numeric exponents</p>
+
 <p>Load data from csv</p>
 
-<pre><code class="r">require(utils)
-require(data.table)
-stormdata &lt;- stormdata &lt;- read.csv2(file=zipData, header=TRUE, sep=&quot;,&quot;, stringsAsFactor=FALSE,  strip.white = TRUE, skipNul = TRUE, nrows=100)
+<pre><code class="r">require(utils) || install.packages(&#39;utils&#39;)
 </code></pre>
+
+<pre><code>## [1] TRUE
+</code></pre>
+
+<pre><code class="r">require(data.table) || install.packages(&#39;data.table&#39;)
+</code></pre>
+
+<pre><code>## [1] TRUE
+</code></pre>
+
+<pre><code class="r">columns &lt;-c(&quot;NULL&quot;, &quot;character&quot;, rep(&quot;NULL&quot;, 5), &quot;character&quot;, rep(&quot;NULL&quot;, 14), rep(&quot;character&quot;, 5),&#39;character&#39;, rep(&quot;NULL&quot;, 9))
+stormdata &lt;- read.csv2(file=zipData, header=TRUE, sep=&quot;,&quot;, stringsAsFactor=FALSE,  strip.white = TRUE, skipNul = TRUE, colClasses= columns)
+
+# Find how many events
+events &lt;- unique(stormdata$EVTYPE)
+population_health &lt;- c(&quot;FATALITIES&quot;, &quot;INJURIES&quot;)
+# Get the Unit exponent for dollar amount damage of property and crops
+propertydamage_exp &lt;- unique(stormdata$PROPDMGEXP)
+cropdamage_exp &lt;- unique(stormdata$CROPDMGEXP)
+</code></pre>
+
+<h1>Cleanse data</h1>
+
+<h2>Event entries inconsistency</h2>
+
+<p>Event names are trimmed of leading and trailing whitespaces and normalized o lowercases. Events are not recategorized avoiding changing any original assumptions.</p>
+
+<h2>Events collection inconsistency</h2>
+
+<p>Events categorizations and data collections expands from 1950-2014. For example, only Tornado is collected from 1950 to 1954; but from 1996 onwards 48 event types are recorded.
+Because missing data does not equate zero effect, the analysis is thus restricted to most recent collection period - 1996 to present.</p>
+
+<h1>Dollar damage exponents inconsistency</h1>
+
+<p>Some property[PPROP] and crop[CROP] damage dollar amounts are recorded in two columns:</p>
+
+<ul>
+<li>base dollar amount in respective DMG column</li>
+<li>unit exponent in DMGEXP column.</li>
+</ul>
+
+<p>Unadjusted dollar amounts, based on the value and suffix. 
+Suffix (h,k,m,b) is converted to unadjusted multipler; (+,-,? and empty sring) is converted to multipler of 1. Numeric characters converted to integer multipler.</p>
+
+<pre><code class="r">require(stringr) || install.packages(&#39;stringr&#39;)
+</code></pre>
+
+<pre><code>## Loading required package: stringr
+</code></pre>
+
+<pre><code>## [1] TRUE
+</code></pre>
+
+<pre><code class="r">propertydamage_exp &lt;- unique(stormdata$PROPDMGEXP)
+cropdamage_exp &lt;- unique(stormdata$CROPDMGEXP)
+
+
+stormdata$YEAR &lt;-format(as.Date(stormdata$BGN_DATE , &quot;%m/%d/%Y&quot;), &quot;%Y&quot;, drop0trailing=TRUE)
+# only consider fro year 1995 to 2014
+stormdata &lt;- stormdata[stormdata$YEAR &gt;= 1995 &amp; stormdata$YEAR &lt;= 2014,] 
+# Trim leading and trailing whitespace, tolower case.
+stormdata$EVTYPE &lt;- as.vector(tolower(str_trim(stormdata$EVTYPE)))
+stormdata$PROPDMGEXP &lt;- as.vector(tolower(str_trim(stormdata$PROPDMGEXP)))
+stormdata$CROPDMGEXP &lt;- as.vector(tolower(str_trim(stormdata$CROPDMGEXP)))
+
+# Group injuries and fatalies as population_safty
+
+
+# Group property damage and crop damage as econmoic_damage
+
+
+# Summarise population_safty by events &amp; rank total  
+
+
+# Summarise econmoic_damageby events &amp; rank total  
+</code></pre>
+
+<p>The scope of events related harmful to population health are:</p>
 
 <h1>Analysis</h1>
 
 <h1>Results.</h1>
 
+<p>Tornado and flood causes most economic damage, as well as damage to population health.</p>
+
 <h2>Publishing Results</h2>
+
+<pre><code class="r">require(knitr) || install.packages(&#39;knitr&#39;)
+</code></pre>
+
+<pre><code>## [1] TRUE
+</code></pre>
 
 <pre><code class="r">title &lt;- &quot;NOAA Weather Population Health And Economic Damage Analysis&quot;
 html &lt;- &quot;PA2_template.html&quot;
 result &lt;- rpubsUpload(title, html)
 </code></pre>
 
-<pre><code>## Error: could not find function &quot;rpubsUpload&quot;
+<pre><code>## Error in eval(expr, envir, enclos): could not find function &quot;rpubsUpload&quot;
 </code></pre>
 
 <pre><code class="r">if (!is.null(result$continueUrl)) 
     browseURL(result$continueUrl) else stop(result$error)
 </code></pre>
 
-<pre><code>## Error: object &#39;result&#39; not found
+<pre><code>## Error in eval(expr, envir, enclos): object &#39;result&#39; not found
 </code></pre>
 
 <pre><code class="r"># update the same document with a new title
 updateResult &lt;- rpubsUpload(title, html, result$id)
 </code></pre>
 
-<pre><code>## Error: could not find function &quot;rpubsUpload&quot;
+<pre><code>## Error in eval(expr, envir, enclos): could not find function &quot;rpubsUpload&quot;
 </code></pre>
 
 </body>

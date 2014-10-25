@@ -72,20 +72,101 @@ Event names are trimmed of leading and trailing whitespaces and normalized o low
 
 ## Events collection inconsistency 
 Events categorizations and data collections expands from 1950-2014. For example, only Tornado is collected from 1950 to 1954; but from 1996 onwards 48 event types are recorded.
-Since missing data does not equate zero effect, the analysis to compare 1996 to present when collections methods are uniform and data most recent.
+Because missing data does not equate zero effect, the analysis is thus restricted to most recent collection period - 1996 to present.
 
 # Dollar damage exponents inconsistency
-Some property and crop damage dollar amounts are recorded in two columns.
-Base dollar amount in respective DMG, unit exponent in DMGEXP.
-The total dollar amount need to be noralized from both DM and DMGEXP.
-For example for property damanage 100 as 1 in PROPDMG, H or h in PROPDMGEXP. 
-All non-numeric characters are normalzed to lower case and are limited to h,k,m,b (hundreds, thousand, million, billion).
-Numeric characters are conerted to integer.
-All others as 0, to be converted to 10^0 which is 1.
+Some property[PPROP] and crop[CROP] damage dollar amounts are recorded in two columns:
+ * base dollar amount in respective DMG column
+ * unit exponent in DMGEXP column.
+
+Unadjusted dollar amounts, based on the value and suffix. 
+Suffix (h,k,m,b) is converted to unadjusted multipler; (+,-,? and empty sring) is converted to multipler of 1. Numeric characters converted to integer multipler.
+
+
+
+```r
+require(stringr) || install.packages('stringr')
+```
+
+```
+## Loading required package: stringr
+```
+
+```
+## [1] TRUE
+```
+
+```r
+propertydamage_exp <- unique(stormdata$PROPDMGEXP)
+cropdamage_exp <- unique(stormdata$CROPDMGEXP)
+
+
+stormdata$YEAR <-format(as.Date(stormdata$BGN_DATE , "%m/%d/%Y"), "%Y", drop0trailing=TRUE)
+# only consider fro year 1995 to 2014
+stormdata <- stormdata[stormdata$YEAR >= 1995 & stormdata$YEAR <= 2014,] 
+# Trim leading and trailing whitespace, tolower case.
+stormdata$EVTYPE <- as.vector(tolower(str_trim(stormdata$EVTYPE)))
+stormdata$PROPDMGEXP <- as.vector(tolower(str_trim(stormdata$PROPDMGEXP)))
+stormdata$CROPDMGEXP <- as.vector(tolower(str_trim(stormdata$CROPDMGEXP)))
+
+# Group injuries and fatalies as population_safty
+
+
+# Group property damage and crop damage as econmoic_damage
+
+
+# Summarise population_safty by events & rank total  
+
+
+# Summarise econmoic_damageby events & rank total  
+```
+
+
+The scope of events related harmful to population health are:
+
+# Analysis
+
+# Results.
+Tornado and flood causes most economic damage, as well as damage to population health.
 
 
 
 
+## Publishing Results
 
+```r
+require(knitr) || install.packages('knitr')
+```
 
+```
+## [1] TRUE
+```
+
+```r
+title <- "NOAA Weather Population Health And Economic Damage Analysis"
+html <- "PA2_template.html"
+result <- rpubsUpload(title, html)
+```
+
+```
+## Error in eval(expr, envir, enclos): could not find function "rpubsUpload"
+```
+
+```r
+if (!is.null(result$continueUrl)) 
+    browseURL(result$continueUrl) else stop(result$error)
+```
+
+```
+## Error in eval(expr, envir, enclos): object 'result' not found
+```
+
+```r
+# update the same document with a new title
+updateResult <- rpubsUpload(title, html, result$id)
+```
+
+```
+## Error in eval(expr, envir, enclos): could not find function "rpubsUpload"
+```
 

@@ -68,6 +68,9 @@ Some property[PPROP] and crop[CROP] damage dollar amounts are recorded in two co
 Unadjusted dollar amounts, based on the value and suffix. 
 Suffix (h,k,m,b) is converted to unadjusted multipler; (+,-,? and empty sring) is converted to multipler of 1. Numeric characters converted to integer multipler.
 
+# New data columns
+Injuries and fatalies are grouped as new column population_safety.
+Property and crop damages are grouped under economic_damage.
 
 ``` {r cleansedata, echo=TRUE}
 require(stringr) || install.packages('stringr')
@@ -84,16 +87,18 @@ stormdata$EVTYPE <- as.vector(tolower(str_trim(stormdata$EVTYPE)))
 stormdata$PROPDMGEXP <- as.vector(tolower(str_trim(stormdata$PROPDMGEXP)))
 stormdata$CROPDMGEXP <- as.vector(tolower(str_trim(stormdata$CROPDMGEXP)))
 
+# Crete
+
 # Group injuries and fatalies as population_safty
 
 
 # Group property damage and crop damage as econmoic_damage
 
 
-# Summarise population_safty by events & rank total  
+# Summarise population_safety by events & rank total  
 
 
-# Summarise econmoic_damageby events & rank total  
+# Summarise econmoic_damage by events & rank total  
 
 
 
