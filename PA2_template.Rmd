@@ -86,14 +86,15 @@ stormdata <- stormdata[stormdata$YEAR >= 1995 & stormdata$YEAR <= 2014,]
 stormdata$EVTYPE <- as.vector(tolower(str_trim(stormdata$EVTYPE)))
 stormdata$PROPDMGEXP <- as.vector(tolower(str_trim(stormdata$PROPDMGEXP)))
 stormdata$CROPDMGEXP <- as.vector(tolower(str_trim(stormdata$CROPDMGEXP)))
-storm$FATALITIES <- as.vector(as.numeric(storm$FATALITIES))
-storm$INJURIES <- as.vector(as.numeric(storm$INJURIES))
+stormdata$FATALITIES <- as.vector(as.numeric(stormdata$FATALITIES))
+stormdata$INJURIES <- as.vector(as.numeric(stormdata$INJURIES))
 
 storm <- data.table(stormdata)
-rm(stormdata)
+#rm(stormdata)
 # Create new data columns
 storm <- storm[, PUBLICSAFTY := storm$FATALITIES + storm$INJURIES]
-storm <- group_by(storm,  EVTYPE)
+storm <- group_by(storm, EVTYPE)
+
 
 
 
