@@ -112,7 +112,12 @@ storm[storm$CROPDMGEXP == 'b', ]$CROPMUL <- 1000000000.0
 
 # Group property damage and crop damage as econmoic_damage
 # Create
-storm <- storm[, DAMAGE:= (storm$PROPDMG*storm$PROPDMGEXP + storm$INJURIES)]
+calculate_damage <- function(data) {
+    ret <- (data$PROPDMG * data$PROPMUL) +
+           (data$CROPDMG * data$CROPDMGEXP)
+    return(ret)     
+}
+storm <- storm[, DAMAGE:= calculate_damage(storm)]
 
 
 
