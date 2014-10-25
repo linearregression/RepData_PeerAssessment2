@@ -94,15 +94,7 @@ storm <- data.table(stormdata)
 # Create new data columns
 storm <- storm[, PUBLICSAFTY := storm$FATALITIES + storm$INJURIES]
 storm <- group_by(storm, EVTYPE)
-public <- aggregate(PUBLICSAFTY ~ EVTYPE, data=storm, FUN=sum)
-public <- arrange(public, desc(PUBLICSAFTY)
 
-# Display Top 5 results
-top_n(public, 5)
-
-
-
-stormdata$ECONMYDAMAGE <-
 
 # Group injuries and fatalies as population_safty
 
@@ -127,9 +119,12 @@ require(dplyr) || install.packages('dplyr')
 require(reshape2) || install.packages('reshape')
 require(ggplot2) || install.packages('ggplot2')
 
-
-
 # Summarise population_safety by events & rank total  
+public <- aggregate(PUBLICSAFTY ~ EVTYPE, data=storm, FUN=sum)
+public <- arrange(public, desc(PUBLICSAFTY)
+
+# Display Top 5 results
+top_n(public, 5)
 
 
 # Summarise econmoic_damage by events & rank total  
