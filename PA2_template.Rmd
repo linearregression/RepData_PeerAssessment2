@@ -112,7 +112,7 @@ The scope of events related harmful to population health are:
 
 ```
 # Results.
-Tornado causes most economic damage, as well as damage to population health.
+Tornado and flood causes most economic damage, as well as damage to population health.
 
 
 
